@@ -2,17 +2,19 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Predicción de peso</title>
+    <title>Predicción de Peso</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+        /* Fondo general */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #1c1c1c; 
+            font-family: "Arial", sans-serif;
+            background: linear-gradient(135deg, #002b5b, #004aad);
             margin: 0;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
             position: relative;
         }
 
@@ -20,28 +22,32 @@
         .triangle-left {
             width: 0;
             height: 0;
-            border-left: 150px solid #d1d02e;
+            border-left: 150px solid #ff0000;
             border-top: 150px solid transparent;
             position: absolute;
             top: 0;
             left: 0;
+            opacity: 0.8;
         }
 
         .triangle-right {
             width: 0;
             height: 0;
-            border-right: 150px solid #d1d02e;
+            border-right: 150px solid #ffffff;
             border-bottom: 150px solid transparent;
             position: absolute;
             bottom: 0;
             right: 0;
+            opacity: 0.8;
         }
 
+        /* Caja del formulario */
         .container {
-            background-color: #0f0b0b; 
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
             padding: 50px 40px;
             border-radius: 20px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
             text-align: center;
             width: 400px;
             position: relative;
@@ -49,25 +55,30 @@
         }
 
         h2 {
-            color: #d1d02e;
-            margin-bottom: 30px;
+            color: #ffffff;
+            margin-bottom: 25px;
+            font-size: 26px;
+            letter-spacing: 1px;
         }
 
         form label {
             display: block;
             text-align: left;
             font-size: 16px;
-            color: #d1d02e;
-            margin-bottom: 5px;
+            color: #ffffff;
+            margin-bottom: 8px;
         }
 
         form input[type="text"] {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 25px;
+            border-radius: 8px;
             border: none;
             font-size: 16px;
+            outline: none;
+            background-color: #ffffff;
+            color: #002b5b;
         }
 
         .btn {
@@ -75,14 +86,27 @@
             padding: 12px;
             font-size: 18px;
             border: none;
-            border-radius: 5px;
-            background-color: #567d23; 
+            border-radius: 8px;
+            background-color: #ff0000;
             color: white;
+            font-weight: bold;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .btn:hover {
-            background-color: #46611a;
+            background-color: #cc0000;
+            transform: scale(1.05);
+        }
+
+        /* Animación suave */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            animation: fadeIn 1s ease-in-out;
         }
     </style>
 </head>
@@ -93,7 +117,7 @@
     <div class="container">
         <h2>Predicción de Peso</h2>
 
-        <form method="POST" action="{% url 'predecir_peso' %}">
+        <form method="POST" action="#">
             {% csrf_token %}
             <label for="edad">Ingrese su edad para predecir su peso:</label>
             <input type="text" name="edad" id="edad" required placeholder="Ejemplo: 25">
@@ -106,12 +130,12 @@
         {% for mensaje in messages %}
         <script>
           Swal.fire({
-            title: "Aviso",
+            title: "Resultado",
             text: "{{ mensaje }}",
             icon: "info",
-            background: "#1c1c1c",
+            background: "#002b5b",
             color: "#ffffff",
-            confirmButtonColor: "#d1d02e"
+            confirmButtonColor: "#ff0000"
           });
         </script>
         {% endfor %}
