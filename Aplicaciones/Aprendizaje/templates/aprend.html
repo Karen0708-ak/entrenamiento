@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Predicción de peso</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1c1c1c; 
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Triángulos decorativos */
+        .triangle-left {
+            width: 0;
+            height: 0;
+            border-left: 150px solid #d1d02e;
+            border-top: 150px solid transparent;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .triangle-right {
+            width: 0;
+            height: 0;
+            border-right: 150px solid #d1d02e;
+            border-bottom: 150px solid transparent;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+
+        .container {
+            background-color: #0f0b0b; 
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            text-align: center;
+            width: 400px;
+            position: relative;
+            z-index: 1;
+        }
+
+        h2 {
+            color: #d1d02e;
+            margin-bottom: 30px;
+        }
+
+        form label {
+            display: block;
+            text-align: left;
+            font-size: 16px;
+            color: #d1d02e;
+            margin-bottom: 5px;
+        }
+
+        form input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            background-color: #567d23; 
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #46611a;
+        }
+    </style>
+</head>
+<body>
+    <div class="triangle-left"></div>
+    <div class="triangle-right"></div>
+
+    <div class="container">
+        <h2>Predicción de Peso</h2>
+
+        <form method="POST" action="{% url 'predecir_peso' %}">
+            {% csrf_token %}
+            <label for="edad">Ingrese su edad para predecir su peso:</label>
+            <input type="text" name="edad" id="edad" required placeholder="Ejemplo: 25">
+
+            <button type="submit" class="btn">Predecir peso</button>
+        </form>
+    </div>
+
+    {% if messages %}
+        {% for mensaje in messages %}
+        <script>
+          Swal.fire({
+            title: "Aviso",
+            text: "{{ mensaje }}",
+            icon: "info",
+            background: "#1c1c1c",
+            color: "#ffffff",
+            confirmButtonColor: "#d1d02e"
+          });
+        </script>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>
