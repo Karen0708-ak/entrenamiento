@@ -16,8 +16,8 @@ def predecir_peso(request):
     modelo.fit(edades, pesos)
 
     # Obtener coeficientes del modelo
-    w0 = round(modelo.intercept_, 2)
-    w1 = round(modelo.coef_[0], 2)
+    w0 = round(modelo.intercept_, 6)
+    w1 = round(modelo.coef_[0], 6)
 
     if request.method == "POST":
         edad = float(request.POST.get("edad"))
@@ -31,4 +31,6 @@ def predecir_peso(request):
     }
 
     return render(request, "aprend.html", contexto)
+
+
 
