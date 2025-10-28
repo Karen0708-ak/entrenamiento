@@ -133,10 +133,20 @@
     <div class="container">
         <h2>Predicción de Peso</h2>
 
-        <form method="POST" action="{% url 'predecir_peso' %}">
+        <form id="predForm" method="POST" action="{% url 'predecir_peso' %}">
             {% csrf_token %}
             <label for="edad">Ingrese su edad para predecir su peso:</label>
-            <input type="number" name="edad" id="edad" required placeholder="Ejemplo: 25">
+            <input
+                type="text"
+                name="edad"
+                id="edad"
+                required
+                placeholder="Ejemplo: 25"
+                inputmode="numeric"
+                pattern="\d*"
+                maxlength="3"
+                autocomplete="off"
+            >
             <br>
             <button type="submit" class="btn">Predecir peso</button>
         </form>
@@ -177,9 +187,88 @@
     <!-- Bootstrap Bundle con JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Validación cliente: solo dígitos, entre 0 y 120 -->
+    <script>
+        (function () {
+            const edadInput = document.getElementById('edad');
+            const form = document.getElementById('predForm');
+
+            // Evita pegar texto con letras/caracteres especiales
+            edadInput.addEventListener('paste', function (e) {
+                const paste = (e.clipboardData || window.clipboardData).getData('text');
+                if (!/^\d+$/.test(paste)) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: "Entrada inválida",
+                        text: "Solo se permiten números (0-120).",
+                        icon: "error",
+                        background: "#002b5b",
+                        color: "#ffffff",
+                        confirmButtonColor: "#ff0000"
+                    });
+                }
+            });
+
+            // Evita teclas que no sean dígitos y controla signos
+            edadInput.addEventListener('keydown', function (e) {
+                // Permitir: Backspace(8), Tab(9), Enter(13), Arrow keys, Delete(46)
+                const allowedKeys = [8,9,13,37,38,39,40,46];
+                if (allowedKeys.indexOf(e.keyCode) !== -1) return;
+                // Permitir Ctrl/Cmd+A,C,V,X
+                if ((e.ctrlKey || e.metaKey) && ['a','c','v','x'].includes(e.key?.toLowerCase())) return;
+                // Bloquear si no es dígito
+                if (!/^\d$/.test(e.key)) {
+                    e.preventDefault();
+                }
+            });
+
+            // Filtra entrada en tiempo real: solo dígitos, sin ceros a la izquierda innecesarios
+            edadInput.addEventListener('input', function () {
+                let v = this.value.replace(/[^\d]/g, '');
+                // Quitar ceros a la izquierda (pero dejar "0" si es exactamente 0)
+                v = v.replace(/^0+(?=\d)/, '');
+                // Limitar a 3 caracteres
+                if (v.length > 3) v = v.slice(0, 3);
+                // Limitar valor máximo a 120
+                if (v !== '') {
+                    const num = parseInt(v, 10);
+                    if (num > 120) v = '120';
+                }
+                this.value = v;
+            });
+
+            // Validación final al enviar
+            form.addEventListener('submit', function (e) {
+                const value = edadInput.value.trim();
+                if (!/^\d+$/.test(value)) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: "Entrada inválida",
+                        text: "Ingrese solo números (edad en años).",
+                        icon: "error",
+                        background: "#002b5b",
+                        color: "#ffffff",
+                        confirmButtonColor: "#ff0000"
+                    });
+                    return;
+                }
+                const edad = parseInt(value, 10);
+                if (isNaN(edad) || edad < 0 || edad > 120) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: "Rango inválido",
+                        text: "La edad debe estar entre 0 y 120 años.",
+                        icon: "error",
+                        background: "#002b5b",
+                        color: "#ffffff",
+                        confirmButtonColor: "#ff0000"
+                    });
+                }
+            });
+        })();
+    </script>
+
     <!-- Mostrar modal automáticamente si hay resultado -->
-
-
     {% if resultado %}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
